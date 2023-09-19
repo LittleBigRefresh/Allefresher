@@ -1,14 +1,14 @@
 TARGET = Allefresher
-OBJS = main.o
+OBJS = src/main.o
 
 BUILD_PRX = 1
 
-CFLAGS = -O2 -w -msingle-float
+CFLAGS = -O2 -w -msingle-float -Iinclude/
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti  
 ASFLAGS = $(CFLAGS)
 
 LIBDIR =
-LIBS = libpspsystemctrl_kernel.a -lc -lpspkernel -lpspdebug -lpspge
+LIBS = libs/libpspsystemctrl_kernel.a -lc -lpspkernel -lpspdebug -lpspge
 LDFLAGS = -nostartfiles 
 
 PSPSDK = $(shell psp-config --pspsdk-path)
