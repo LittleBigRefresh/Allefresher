@@ -4,11 +4,9 @@ A tool for patching LittleBigPlanet for the Playstation Portable to allow connec
 
 ## Installation
 
-Copy to the `SEPLUGINS` folder on your PSP, and create/edit a file called `game.txt` in that folder too.
+Copy `Allefresher.prx` to the `SEPLUGINS` folder on your PSP, and create/edit a file called `game.txt` in that folder too. This can be on your memory stick (`ms0:`) or the internal storage (`ef0:`). Keep note of which you put it on!
 
-Place the text `ef0:/SEPLUGINS/Allefresher.prx 1` into that text file
-
-You should have `SEPLUGINS/Allefresher.prx` and `SEPLUGINS/game.txt` on the root of your PSP's storage
+If you put the plugin in your memory stick, place `ms0:/SEPLUGINS/Allefresher.prx 1` into `game.txt`, however if you put it on your internal storage, place `ef0:/SEPLUGINS/Allefresher.prx 1` into the file
 
 Open LBP and have fun!
 

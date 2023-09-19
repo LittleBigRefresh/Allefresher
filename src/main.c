@@ -60,7 +60,8 @@ void patchString(char *targetAddress, char *patchedString)
 char domain[MAX_LINE_SIZE];
 char format[MAX_LINE_SIZE];
 
-#define PATH "ef0:SEPLUGINS/"
+#define DEFAULT_PATH "ef0:SEPLUGINS/"
+#define MEMORY_STICK_PATH "ms0:SEPLUGINS/"
 #define DOMAIN_FILE "Allefresher_domain.txt"
 #define FORMAT_FILE "Allefresher_format.txt"
 
@@ -125,13 +126,13 @@ int readFileFirstLine(char *path, char *target)
 void patchBinary(u32 text_addr, u32 text_size)
 {
 	// Try to read the domain string
-	if (!readFileFirstLine(PATH DOMAIN_FILE, domain))
+	if (!readFileFirstLine(DEFAULT_PATH DOMAIN_FILE, domain) && !readFileFirstLine(MEMORY_STICK_PATH DOMAIN_FILE, domain))
 	{
 		return;
 	}
 
 	// Try to read the format string
-	if (!readFileFirstLine(PATH FORMAT_FILE, format))
+	if (!readFileFirstLine(DEFAULT_PATH FORMAT_FILE, format) && !readFileFirstLine(MEMORY_STICK_PATH FORMAT_FILE, format))
 	{
 		return;
 	}
