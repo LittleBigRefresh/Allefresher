@@ -1,13 +1,9 @@
-TARGET = imgwpatch
+TARGET = Allefresher
 OBJS = main.o
 
-# Define to build this as a prx (instead of a static elf)
 BUILD_PRX = 1
 
-# USE_KERNEL_LIBS = 1
-# USE_KERNEL_LIBC = 1
-
-CFLAGS = -G0 -w -msingle-float -g -Og
+CFLAGS = -O2 -w -msingle-float
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti  
 ASFLAGS = $(CFLAGS)
 
