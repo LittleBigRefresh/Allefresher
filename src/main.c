@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #define EMULATOR_DEVCTL__IS_EMULATOR 0x00000003
 
@@ -54,9 +55,87 @@ void patchString(char *targetAddress, char *patchedString)
 
 #define DIGEST_OFFSET_FROM_LONE_HTTPS 0x44
 
+#define MAX_LINE_SIZE 256
+
+char domain[MAX_LINE_SIZE];
+char format[MAX_LINE_SIZE];
+
+#define PATH "ef0:SEPLUGINS/"
+#define DOMAIN_FILE "Allefresher_domain.txt"
+#define FORMAT_FILE "Allefresher_format.txt"
+
+// Reads the file at `path` into `target`
+int readFileFirstLine(char *path, char *target)
+{
+	SceUID fd = sceIoOpen(path, PSP_O_RDONLY, 0777);
+	// If opening the file failed, just die out
+	if (fd < 0)
+	{
+		Kprintf("Unable to open %s!\n", path);
+		return 0;
+	}
+
+	char data[MAX_LINE_SIZE];
+	// Read the data in
+	int read = sceIoRead(fd, data, sizeof(data));
+
+	// Close the file now that we are done with it
+	sceIoClose(fd);
+
+	// If we read too much data to fit inside our buffer, something *probably* went wrong
+	if (read >= MAX_LINE_SIZE)
+	{
+		Kprintf("Way too much data in %s!\n", path);
+		return 0;
+	}
+
+	// The amount of valid bytes
+	int valid = 0;
+	// Iterate over all the data we read
+	while (valid < read)
+	{
+		// If the character is whitespace,
+		if (isspace(data[valid]))
+		{
+			// Break out, as we are at the end of the domain
+			break;
+		}
+
+		// Mark one more character as valid
+		valid++;
+	}
+
+	// If theres no valid characters, something went wrong (maybe extra padding at the start of the file?)
+	if (valid == 0)
+	{
+		Kprintf("No string found in %s! Make sure theres no padding at the start of the file!\n", path);
+		return 0;
+	}
+
+	// Null terminate the data
+	data[valid] = 0;
+
+	// Copy the read data into the domain file
+	strcpy(target, data);
+
+	return 1;
+}
+
 // Searches for, and patches the relavent strings in the binary
 void patchBinary(u32 text_addr, u32 text_size)
 {
+	// Try to read the domain string
+	if (!readFileFirstLine(PATH DOMAIN_FILE, domain))
+	{
+		return;
+	}
+
+	// Try to read the format string
+	if (!readFileFirstLine(PATH FORMAT_FILE, format))
+	{
+		return;
+	}
+
 	u32 end_addr = text_addr + text_size;
 
 	Kprintf("Patching LBPPSP binary (0x%08x 0x%08x)", text_addr, text_size);
@@ -94,21 +173,21 @@ void patchBinary(u32 text_addr, u32 text_size)
 		{
 			Kprintf("Found domain at addr 0x%08x\n", iter_addr);
 
-			patchString(ptr, "tcp.beyleyisnot.moe");
+			patchString(ptr, domain);
 		}
 		// Check for the http format string
 		else if (strcmp("http://%s:10060/LITTLEBIGPLANETPSP_XML%s", ptr) == 0)
 		{
 			Kprintf("Found http format string at addr 0x%08x\n", iter_addr);
 
-			patchString(ptr, "http://%s:10061/lbp%s");
+			patchString(ptr, format);
 		}
 		// Check for the https format string
 		else if (strcmp("https://%s:10061/LITTLEBIGPLANETPSP_XML%s", ptr) == 0)
 		{
 			Kprintf("Found https format string at addr 0x%08x\n", iter_addr);
 
-			patchString(ptr, "http://%s:10061/lbp%s");
+			patchString(ptr, format);
 		}
 		// Check for the np roster branching code
 		else if (memcmp(ptr, originalNpBranch, 8) == 0)
