@@ -8,6 +8,8 @@ Copy `Allefresher.prx` to the `SEPLUGINS` folder on your PSP, and create/edit a 
 
 If you put the plugin in your memory stick, place `ms0:/SEPLUGINS/Allefresher.prx 1` into `game.txt`, however if you put it on your internal storage, place `ef0:/SEPLUGINS/Allefresher.prx 1` into the file
 
+Write the domain into `/SEPLUGINS/Allefresher_domain.txt`, and write the format string into `/SEPLUGINS/Allefresher_format.txt` (these will be provided by your server host)
+
 Open LBP and have fun!
 
 ## Building from source
