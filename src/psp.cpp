@@ -16,10 +16,10 @@ extern "C"
 #define EMULATOR_DEVCTL__IS_EMULATOR 0x00000003
 
 #if defined(USER_SPACE)
-PSP_MODULE_INFO("Allefresher_user", PSP_MODULE_USER, 1, 0);
+PSP_MODULE_INFO(Allefresher_user, PSP_MODULE_USER, 1, 0);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #elif defined(KERNEL_SPACE)
-PSP_MODULE_INFO("Allefresher_kernel", PSP_MODULE_KERNEL, 1, 0);
+PSP_MODULE_INFO(Allefresher_kernel, PSP_MODULE_KERNEL, 1, 0);
 PSP_MAIN_THREAD_ATTR(0);
 #else
 #error Neither kernel nor user space specified
@@ -169,8 +169,10 @@ int pspModuleHandler(SceModule2 *module)
 		// Patch the LBP PSP module
 		patchLBPPSP(module->text_addr, module->text_size);
 
+#ifdef KERNEL_SPACE
 		// Flush memory caches
 		sceKernelDcacheWritebackAll();
+#endif
 	}
 
 	return old(module);

@@ -12,10 +12,10 @@ INCDIR = $(PSPDEV)/psp/include $(PSPSDK)/include include/
 LIBDIR = $(PSPDEV)/psp/lib $(PSPSDK)/lib
 
 CFLAGS   = $(addprefix -I,$(INCDIR)) -G0 -O2 -Wno-write-strings -Wpedantic
-CXXFLAGS = $(CFLAGS)
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS  = $(CFLAGS)
 
-LDFLAGS = $(addprefix -L,$(LIBDIR)) -Wl,-q,-T$(PSPSDK)/lib/linkfile.prx -nostartfiles -Wl,-zmax-page-size=128
+LDFLAGS = $(addprefix -L,$(LIBDIR)) -Wl,-q,-T$(PSPSDK)/lib/linkfile.prx -specs=$(PSPSDK)/lib/prxspecs -nostartfiles -Wl,-zmax-page-size=128
 
 LIBS_KERNEL = libs/libpspsystemctrl_kernel.a -lc -lpspkernel -lpspdebug -lpspge
 LIBS_USER = libs/libpspsystemctrl_user.a -lc -lpspdebug -lpspge
