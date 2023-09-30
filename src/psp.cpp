@@ -17,13 +17,13 @@ extern "C"
 
 #if defined(USER_SPACE)
 PSP_MODULE_INFO("Allefresher_user", PSP_MODULE_USER, 1, 0);
+PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER);
 #elif defined(KERNEL_SPACE)
 PSP_MODULE_INFO("Allefresher_kernel", PSP_MODULE_KERNEL, 1, 0);
+PSP_MAIN_THREAD_ATTR(0);
 #else
 #error Neither kernel nor user space specified
 #endif
-
-PSP_MAIN_THREAD_ATTR(0);
 
 #define NP_SERVICE_MODULE_NAME "sceNpService"
 
@@ -44,21 +44,21 @@ char format[MAX_LINE_SIZE];
 #endif
 
 #ifdef USER_SPACE
-char *customEula(u32 unknown, u32 unknown2)
+extern "C" char *customEula(u32 unknown, u32 unknown2)
 {
 	return "THIS IS A TEST WAAAAA";
 }
 
-void patchLBPPSPUser(u32 text_addr, u32 text_size)
+void patchLBPPSP(u32 text_addr, u32 text_size)
 {
 	// Patch the EULA function
-	patchFunction(text_addr + 0x1FE338, &customEula);
+	patchMIPSFunction(text_addr + 0x1FE338, &customEula);
 }
 #endif
 
 #ifdef KERNEL_SPACE
 // Searches for, and patches the relevant strings in the binary
-void patchLBPPSPKernel(u32 text_addr, u32 text_size)
+void patchLBPPSP(u32 text_addr, u32 text_size)
 {
 	// Try to read the domain string
 	if (!readFileFirstLine(DEFAULT_PATH DOMAIN_FILE, domain) && !readFileFirstLine(MEMORY_STICK_PATH DOMAIN_FILE, domain))
@@ -144,6 +144,7 @@ int pspModuleHandler(SceModule2 *module)
 	// Check if we are loading the sceNpService module
 	if (strcmp(NP_SERVICE_MODULE_NAME, module->modname) == 0)
 	{
+#if defined(KERNEL_SPACE)
 		// Get the original syscalls
 		void *sceNpRosterCreateRequest = (void *)sctrlHENFindFunction(NP_SERVICE_MODULE_NAME, NP_SERVICE_MODULE_NAME, 0xBE22EEA3);
 		void *sceNpRosterGetFriendListEntry = (void *)sctrlHENFindFunction(NP_SERVICE_MODULE_NAME, NP_SERVICE_MODULE_NAME, 0x4E851B10);
@@ -160,17 +161,13 @@ int pspModuleHandler(SceModule2 *module)
 
 		// Flush memory caches
 		sceKernelDcacheWritebackAll();
+#endif
 	}
 	// Check if we are loading the LBP PSP module
 	else if (strcmp("LBPPSP", module->modname) == 0)
 	{
-#if defined(KERNEL_SPACE)
 		// Patch the LBP PSP module
-		patchLBPPSPKernel(module->text_addr, module->text_size);
-#elif defined(USER_SPACE)
-		// Patch the LBP PSP module
-		patchLBPPSPUser(module->text_addr, module->text_size);
-#endif
+		patchLBPPSP(module->text_addr, module->text_size);
 
 		// Flush memory caches
 		sceKernelDcacheWritebackAll();

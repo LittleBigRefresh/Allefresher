@@ -18,7 +18,7 @@ ASFLAGS  = $(CFLAGS)
 LDFLAGS = $(addprefix -L,$(LIBDIR)) -Wl,-q,-T$(PSPSDK)/lib/linkfile.prx -nostartfiles -Wl,-zmax-page-size=128
 
 LIBS_KERNEL = libs/libpspsystemctrl_kernel.a -lc -lpspkernel -lpspdebug -lpspge
-LIBS_USER = libs/libpspsystemctrl_user.a -lc -lpspkernel -lpspdebug -lpspge
+LIBS_USER = libs/libpspsystemctrl_user.a -lc -lpspdebug -lpspge
 
 PSP_FW_VERSION=150
 

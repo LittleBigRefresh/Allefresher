@@ -13,9 +13,11 @@ extern "C"
 void patchString(char *targetAddress, char *patchedString);
 
 template <typename T>
-void patchFunction(u32 address, T *function)
+void patchMIPSFunction(u32 address, T *function)
 {
     u32 *data = (u32 *)address;
     data[0] = 0x8000000 | (((u32)function & 0xFFFFFFF) >> 2);
     data[1] = 0;
+
+    Kprintf("Patching MIPS function at address %x with function at address %x\n", address, (u32)function);
 }
