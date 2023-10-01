@@ -5,5 +5,8 @@
         "scee",
         "SEPLUGINS",
         "Writeback"
-    ]
+    ],
+    "files.associations": {
+        "string": "cpp"
+    }
 }

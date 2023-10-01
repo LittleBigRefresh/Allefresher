@@ -1,3 +1,5 @@
 *.prx
 *.elf
+*.velf
+*.skprx
 build/
