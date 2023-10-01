@@ -71,8 +71,9 @@ VITA_SRCS_KERNEL = src/vita.cpp
 VITA_OBJ_DIR_KERNEL = build/kernel_vita
 VITA_OBJS_KERNEL = $(addsuffix .o,$(addprefix $(VITA_OBJ_DIR_KERNEL)/,$(VITA_SRCS_KERNEL)))
 
-VITA-CXXFLAGS = $(CFLAGS) -nostartfiles -mcpu=cortex-a9 -mthumb-interwork -I$(VITASDK)/$(VITA_PREFIX)/include -Wl,-q
-VITA-LDFLAGS = $(VITA-CXXFLAGS) -lSceSysmemForDriver_stub
+VITA-CXXFLAGS = $(CFLAGS) -mcpu=cortex-a9 -mthumb-interwork -I$(VITASDK)/$(VITA_PREFIX)/include -Wl,-q -Iinclude
+VITA-LDFLAGS = -nostartfiles
+VITA-LIBS = libs/libtaihenForKernel_stub.a
 
 # The final target name of the kernel PRX
 FINAL_PSP_TARGET_KERNEL = $(PSP_TARGET_KERNEL).prx
@@ -103,7 +104,7 @@ $(VITA_OBJ_DIR_KERNEL):
 
 # Link the vita kernel object files into an ELF
 $(VITA_TARGET_KERNEL).elf: $(VITA_OBJS_KERNEL) | $(VITA_OBJ_DIR_KERNEL)
-	$(VITA-LD) $(VITA-LDFLAGS) $^ $(VITA_LIBS_KERNEL) -o $@
+	$(VITA-LD) $(VITA-LDFLAGS) $^ $(VITA_LIBS_KERNEL) $(VITA-LIBS) -o $@
 
 # Link the kernel object files into an ELF, and fixup the imports
 $(PSP_TARGET_KERNEL).elf: $(PSP_OBJS_KERNEL) | $(PSP_OBJ_DIR_KERNEL)
