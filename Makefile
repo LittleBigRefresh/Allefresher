@@ -66,21 +66,21 @@ PSP_CFLAGS_USER = -DUSER_SPACE=1 -fno-pic
 # Libs the user module links against
 PSP_LIBS_USER = libs/libpspsystemctrl_user.a -lc -lpspdebug -lpspge
 
-VITA_TARGET_KERNEL = Allefresher_kernel_vita
-VITA_SRCS_KERNEL = src/vita.cpp
-VITA_OBJ_DIR_KERNEL = build/kernel_vita
-VITA_OBJS_KERNEL = $(addsuffix .o,$(addprefix $(VITA_OBJ_DIR_KERNEL)/,$(VITA_SRCS_KERNEL)))
+VITA_TARGET_USER = Allefresher_user_vita
+VITA_SRCS_USER = src/vita.cpp
+VITA_OBJ_DIR_USER = build/user_vita
+VITA_OBJS_USER = $(addsuffix .o,$(addprefix $(VITA_OBJ_DIR_USER)/,$(VITA_SRCS_USER)))
 
-VITA-CXXFLAGS = $(CFLAGS) -mcpu=cortex-a9 -mthumb-interwork -I$(VITASDK)/$(VITA_PREFIX)/include -Wl,-q -Iinclude
-VITA-LDFLAGS = -nostartfiles
-VITA-LIBS = libs/libtaihenForKernel_stub.a
+VITA-CXXFLAGS = $(CXXFLAGS) -mcpu=cortex-a9 -mthumb-interwork -I$(VITASDK)/$(VITA_PREFIX)/include -Wl,-q -Iinclude
+VITA-LDFLAGS = -nostartfiles -Wl,-q
+VITA-LIBS = libs/libtaihen_stub.a
 
 # The final target name of the kernel PRX
 FINAL_PSP_TARGET_KERNEL = $(PSP_TARGET_KERNEL).prx
 # The final target name of the user PRX
 FINAL_PSP_TARGET_USER = $(PSP_TARGET_USER).prx
 
-all: $(FINAL_PSP_TARGET_KERNEL) $(FINAL_PSP_TARGET_USER) $(VITA_TARGET_KERNEL).skprx
+all: $(FINAL_PSP_TARGET_KERNEL) $(FINAL_PSP_TARGET_USER) $(VITA_TARGET_USER).skprx
 
 # For all kernel module object files, invoke the C++ compiler
 $(PSP_OBJ_DIR_KERNEL)/src/%.cpp.o: $(SRC_DIR)/%.cpp | $(PSP_OBJ_DIR_KERNEL)
@@ -91,7 +91,7 @@ $(PSP_OBJ_DIR_USER)/src/%.cpp.o: $(SRC_DIR)/%.cpp | $(PSP_OBJ_DIR_USER)
 	$(PSP-CXX) $(PSP-CXXFLAGS) $(PSP_CFLAGS_USER) -c -o $@ $^
 
 # For all Vita kernel module object files, invoke the C++ compiler
-$(VITA_OBJ_DIR_KERNEL)/src/%.cpp.o: $(SRC_DIR)/%.cpp | $(VITA_OBJ_DIR_KERNEL)
+$(VITA_OBJ_DIR_USER)/src/%.cpp.o: $(SRC_DIR)/%.cpp | $(VITA_OBJ_DIR_USER)
 	$(VITA-CXX) $(VITA-CXXFLAGS) -MMD -MP $(VITA_CFLAGS_KERNEL) -c -o $@ $^
   
 # Make the obj dirs
@@ -99,12 +99,12 @@ $(PSP_OBJ_DIR_KERNEL):
 	mkdir -p $@/$(SRC_DIR)
 $(PSP_OBJ_DIR_USER):
 	mkdir -p $@/$(SRC_DIR)
-$(VITA_OBJ_DIR_KERNEL):
+$(VITA_OBJ_DIR_USER):
 	mkdir -p $@/$(SRC_DIR)
 
 # Link the vita kernel object files into an ELF
-$(VITA_TARGET_KERNEL).elf: $(VITA_OBJS_KERNEL) | $(VITA_OBJ_DIR_KERNEL)
-	$(VITA-LD) $(VITA-LDFLAGS) $^ $(VITA_LIBS_KERNEL) $(VITA-LIBS) -o $@
+$(VITA_TARGET_USER).elf: $(VITA_OBJS_USER) | $(VITA_OBJ_DIR_USER)
+	$(VITA-LD) $(VITA-LDFLAGS) $^ $(VITA-LIBS) -o $@
 
 # Link the kernel object files into an ELF, and fixup the imports
 $(PSP_TARGET_KERNEL).elf: $(PSP_OBJS_KERNEL) | $(PSP_OBJ_DIR_KERNEL)
@@ -133,7 +133,7 @@ $(PSP_TARGET_USER).elf: $(PSP_OBJS_USER) | $(PSP_OBJ_DIR_USER)
 clean: $(EXTRA_CLEAN)
 	-rm -f $(FINAL_PSP_TARGET_KERNEL) $(PSP_TARGET_KERNEL).elf $(PSP_OBJS_KERNEL)
 	-rm -f $(FINAL_PSP_TARGET_USER) $(PSP_TARGET_USER).elf $(PSP_OBJS_USER)
-	-rm -f $(VITA_TARGET_KERNEL).velf $(VITA_TARGET_KERNEL).skprx $(VITA_TARGET_KERNEL).elf $(VITA_OBJS_KERNEL)
+	-rm -f $(VITA_TARGET_USER).velf $(VITA_TARGET_USER).skprx $(VITA_TARGET_USER).elf $(VITA_OBJS_USER)
 	-rm -rf build
 
 rebuild: clean all

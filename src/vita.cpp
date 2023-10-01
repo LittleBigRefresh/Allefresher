@@ -27,6 +27,5 @@ extern "C" int module_start(SceSize argc, const void *args)
 
 extern "C" int module_stop(SceSize argc, const void *args)
 {
-
     return SCE_KERNEL_STOP_SUCCESS;
 }
