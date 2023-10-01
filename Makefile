@@ -67,11 +67,12 @@ PSP_CFLAGS_USER = -DUSER_SPACE=1 -fno-pic
 PSP_LIBS_USER = libs/libpspsystemctrl_user.a -lc -lpspdebug -lpspge
 
 VITA_TARGET_USER = Allefresher_user_vita
-VITA_SRCS_USER = src/vita.cpp
+VITA_SRCS_USER = src/vita.cpp src/re.c src/patching.cpp
 VITA_OBJ_DIR_USER = build/user_vita
 VITA_OBJS_USER = $(addsuffix .o,$(addprefix $(VITA_OBJ_DIR_USER)/,$(VITA_SRCS_USER)))
 
-VITA-CXXFLAGS = $(CXXFLAGS) -mcpu=cortex-a9 -mthumb-interwork -I$(VITASDK)/$(VITA_PREFIX)/include -Wl,-q -Iinclude
+VITA-CFLAGS = $(CFLAGS) -mcpu=cortex-a9 -mthumb-interwork -I$(VITASDK)/$(VITA_PREFIX)/include -Wl,-q -Iinclude -DVITA=1
+VITA-CXXFLAGS = $(CXXFLAGS) -mcpu=cortex-a9 -mthumb-interwork -I$(VITASDK)/$(VITA_PREFIX)/include -Wl,-q -Iinclude -DVITA=1
 VITA-LDFLAGS = -nostartfiles -Wl,-q
 VITA-LIBS = libs/libtaihen_stub.a
 
@@ -90,9 +91,13 @@ $(PSP_OBJ_DIR_KERNEL)/src/%.cpp.o: $(SRC_DIR)/%.cpp | $(PSP_OBJ_DIR_KERNEL)
 $(PSP_OBJ_DIR_USER)/src/%.cpp.o: $(SRC_DIR)/%.cpp | $(PSP_OBJ_DIR_USER)
 	$(PSP-CXX) $(PSP-CXXFLAGS) $(PSP_CFLAGS_USER) -c -o $@ $^
 
-# For all Vita kernel module object files, invoke the C++ compiler
+# For all Vita user module object files, invoke the C++ compiler
 $(VITA_OBJ_DIR_USER)/src/%.cpp.o: $(SRC_DIR)/%.cpp | $(VITA_OBJ_DIR_USER)
 	$(VITA-CXX) $(VITA-CXXFLAGS) -MMD -MP $(VITA_CFLAGS_KERNEL) -c -o $@ $^
+
+# For all Vita user module object files, invoke the C++ compiler
+$(VITA_OBJ_DIR_USER)/src/%.c.o: $(SRC_DIR)/%.c | $(VITA_OBJ_DIR_USER)
+	$(VITA-CC) $(VITA-CFLAGS) -MMD -MP $(VITA_CFLAGS_KERNEL) -c -o $@ $^
   
 # Make the obj dirs
 $(PSP_OBJ_DIR_KERNEL):

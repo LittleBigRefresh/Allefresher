@@ -2,11 +2,13 @@
     "cSpell.words": [
         "Allefresher",
         "LBPPSP",
+        "LBPV",
         "scee",
         "SEPLUGINS",
         "Writeback"
     ],
     "files.associations": {
-        "string": "cpp"
+        "string": "cpp",
+        "string_view": "cpp"
     }
 }
