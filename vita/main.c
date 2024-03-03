@@ -3,7 +3,6 @@
 #include <psp2/kernel/clib.h>
 #include <psp2/gxm.h>
 #include <psp2/io/fcntl.h>
-// #include <psp2/fios2/fios2.h>
 #include <psp2kern/kernel/debug.h>
 #include <taihen.h>
 #include <stdio.h>
@@ -11,9 +10,6 @@
 #include "reader.h"
 
 char *GAME_URL;
-
-// #define GAME_URL "http://refresh.jvyden.xyz:2095/lbp"
-// #define RESOURCE_URL "http://refresh.jvyden.xyz:2095/lbp/r/"
 
 static SceUID https_hook;
 static tai_hook_ref_t https_ref;
@@ -65,7 +61,7 @@ int module_start(SceSize argc, const void *args)
     {
         sceClibPrintf("Failed to read allefresher.txt, using default URL\n");
 
-        GAME_URL = "http://refresh.jvyden.xyz:2095/lbp";
+        GAME_URL = "https://lbp.littlebigrefresh.com/lbp";
     }
     else
     {
@@ -121,6 +117,8 @@ int module_start(SceSize argc, const void *args)
 int module_stop(SceSize argc, const void *args)
 {
     taiHookRelease(https_hook, https_ref);
+    taiHookRelease(http_hook, http_ref);
+    taiHookRelease(resource_hook, resource_ref);
     return SCE_KERNEL_STOP_SUCCESS;
 }
 
