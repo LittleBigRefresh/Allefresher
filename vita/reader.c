@@ -1,23 +1,5 @@
 #include "reader.h"
 
-int isspace(int c)
-{
-    return c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r';
-}
-
-char *strcpy(char *dest, const char *src)
-{
-    char *ret = dest;
-
-    while (*src)
-    {
-        *dest++ = *src++;
-    }
-    *dest = '\0';
-
-    return ret;
-}
-
 // Reads the file at `path` into `target`
 int readFileFirstLine(char *path, char *target)
 {

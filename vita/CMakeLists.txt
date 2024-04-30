@@ -17,6 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions")
 add_executable(Allefresher_vita
   main.c
   reader.c
+  clib.c
 )
 
 target_link_libraries(Allefresher_vita
