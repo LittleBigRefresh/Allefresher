@@ -1,8 +1,13 @@
 # Allefresher
 
-A tool for patching LittleBigPlanet for the Playstation Portable to allow connecting to custom servers.
+A set of CFW plugins for patching LittleBigPlanet games to allow connecting to custom servers.
 
-## Installation
+## Platform Support
+
+- PSP (LBP PSP)
+- Vita (LBP Vita/LBP PSP)
+
+## Installation (PSP)
 
 Copy `Allefresher.prx` to the `SEPLUGINS` folder on your PSP, and create/edit a file called `game.txt` in that folder too. This can be on your memory stick (`ms0:`) or the internal storage (`ef0:`). Keep note of which you put it on!
 
@@ -12,7 +17,13 @@ Write the domain into `/SEPLUGINS/Allefresher_domain.txt`, and write the format 
 
 Open LBP and have fun!
 
-## Building from source
+## Installation (Vita)
+
+Copy `Allefresher_vita.prx` to the `ur0:tai` folder, then add it to `ur0:config.txt` for your LBP Vita title ID.
+
+Open LBP Vita and have fun!
+
+## Building from source (PSP)
 
 ### Setup
 
