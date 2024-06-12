@@ -61,7 +61,7 @@ int module_start(SceSize argc, const void *args)
     {
         sceClibPrintf("Failed to read allefresher.txt, using default URL\n");
 
-        strcpy(GAME_URL, "https://lbp.littlebigrefresh.com/lbp");
+        strcpy(GAME_URL, "http://refresh.jvyden.xyz:2095/lbp");
     }
     else
     {
