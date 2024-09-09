@@ -19,7 +19,7 @@ Open LBP and have fun!
 
 ## Installation (Vita)
 
-Copy `Allefresher_vita.prx` to the `ur0:tai` folder, then add it to `ur0:config.txt` for your LBP Vita title ID.
+Copy `Allefresher_vita.suprx` to the `ur0:tai` folder, then add it to `ur0:config.txt` for your LBP Vita title ID.
 
 Open LBP Vita and have fun!
 
